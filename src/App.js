@@ -8,6 +8,7 @@ import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import PlayerComponent from "./components/PlayerComponent";
 import AlbumComponent from "./components/AlbumComponent";
+import ArtistComponent from "./components/ArtistComponent";
 
 const App = () => {
   return (
@@ -19,6 +20,7 @@ const App = () => {
             <Routes>
               <Route path="/" element={<HomeComponent />} />
               <Route path="/album/:id" element={<AlbumComponent />} />
+              <Route path="/artist/:id" element={<ArtistComponent />} />
               <Route path="/*" element={<NotFoundComponent />} />
             </Routes>
             <PlayerComponent />
