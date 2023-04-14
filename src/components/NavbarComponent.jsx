@@ -3,6 +3,7 @@ import Button from "react-bootstrap/Button";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import { Link } from "react-router-dom";
+import { InputGroup } from "react-bootstrap";
 
 const NavbarComponent = () => {
   return (
@@ -27,7 +28,7 @@ const NavbarComponent = () => {
             <span className="navbar-toggler-icon" />
           </Button>
           <div className="collapse navbar-collapse" id="navbarNavAltMarkup">
-            <Nav className=" flex-column">
+            <Nav className=" flex-column mt-5">
               <Nav.Item>
                 <Link className="nav-item nav-link" to="/">
                   <i className="fas fa-home fa-lg" />
@@ -39,6 +40,29 @@ const NavbarComponent = () => {
                   <i className="fas fa-book-open fa-lg" />
                   &nbsp; Your Library
                 </Link>
+              </Nav.Item>
+              <Nav.Item>
+                <InputGroup className="mt-3 w-75 ms-2">
+                  <input
+                    type="text"
+                    className="form-control mb-2"
+                    id="searchField"
+                    placeholder="Search"
+                    aria-label="Search"
+                    aria-describedby="basic-addon2"
+                  />
+                  <div className="input-group-append">
+                    <Button
+                      variant="secondary"
+                      className="btn-outline btn-sm"
+                      type="button"
+                      id="button-addon1"
+                      onclick="search()"
+                    >
+                      GO
+                    </Button>
+                  </div>
+                </InputGroup>
               </Nav.Item>
             </Nav>
           </div>
