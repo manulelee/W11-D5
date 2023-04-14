@@ -57,7 +57,7 @@ const NavbarComponent = () => {
                       className="btn-outline btn-sm"
                       type="button"
                       id="button-addon1"
-                      onclick="search()"
+                      //onClick="search()"
                     >
                       GO
                     </Button>

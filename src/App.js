@@ -7,6 +7,7 @@ import NavbarComponent from "./components/NavbarComponent";
 import Container from "react-bootstrap/Container";
 import Row from "react-bootstrap/Row";
 import PlayerComponent from "./components/PlayerComponent";
+import AlbumComponent from "./components/AlbumComponent";
 
 const App = () => {
   return (
@@ -17,6 +18,7 @@ const App = () => {
             <NavbarComponent />
             <Routes>
               <Route path="/" element={<HomeComponent />} />
+              <Route path="/album/:id" element={<AlbumComponent />} />
               <Route path="/*" element={<NotFoundComponent />} />
             </Routes>
             <PlayerComponent />
