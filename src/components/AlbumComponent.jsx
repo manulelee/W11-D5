@@ -3,9 +3,12 @@ import Col from "react-bootstrap/Col";
 import TopNavbar from "./TopNavbar";
 import { useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 const AlbumComponent = () => {
   const params = useParams();
+  const dispatch = useDispatch();
+
   const albumArt = (album) => {
     return `
             <img src="${album.cover}" class="card-img img-fluid" alt="Album" />
@@ -20,9 +23,16 @@ const AlbumComponent = () => {
             </div>`;
   };
 
+  const selectSong = (song) => {
+    dispatch({
+      type: "SELECT_SONG",
+      payload: song,
+    });
+  };
+
   const song = (track) => {
     return `
-            <div class="py-3 trackHover">
+            <div class="py-3 trackHover" onclick=${selectSong(track)}>
                 <a href="#" class="card-title trackHover px-3" style="color:white" >${track.title}</a>
                 <small class="duration" style="color:white">${Math.floor(
                   parseInt(track.duration) / 60 // setting the duration minutes
