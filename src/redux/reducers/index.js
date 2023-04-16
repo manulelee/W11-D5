@@ -1,8 +1,8 @@
 const initialState = {
   data: {
     favouriteSongs: [], // brani preferiti
-    favouriteArtists: [], // artisti preferiti
-    selected: [], // brano selezionato
+    search: null, // artisti preferiti
+    selected: null, // brano selezionato
   },
 };
 
@@ -22,29 +22,15 @@ const mainReducer = (state = initialState, action) => {
         ...state,
         data: {
           ...state.data,
-          favouriteSongs: [
-            ...state.data.favouriteSongs.slice(0, action.payload),
-            ...state.data.favouriteSongs.slice(action.payload + 1),
-          ],
+          favouriteSongs: state.data.favouriteSongs.filter((song, i) => i !== action.payload),
         },
       };
-    case "ADD_FAVOURITES_ARTIST":
+    case "SEARCH_ALBUM":
       return {
         ...state,
         data: {
           ...state.data,
-          favouriteArtists: [...state.data.favouriteArtists, action.payload],
-        },
-      };
-    case "REMOVE_FAVOURITES_ARTIST":
-      return {
-        ...state,
-        data: {
-          ...state.data,
-          favouriteArtists: [
-            ...state.data.favouriteArtists.slice(0, action.payload),
-            ...state.data.favouriteArtists.slice(action.payload + 1),
-          ],
+          search: action.payload,
         },
       };
 

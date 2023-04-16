@@ -1,26 +1,35 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import TopNavbar from "./TopNavbar";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 const AlbumComponent = () => {
   const params = useParams();
   const dispatch = useDispatch();
+  const favouritesSongs = useSelector((state) => state.data.favouriteSongs);
 
-  const albumArt = (album) => {
-    return `
-            <img src="${album.cover}" class="card-img img-fluid" alt="Album" />
-            <div class="mt-4 text-center">
-                <p class="album-title">${album.title}</p>
-            </div>
-            <div class="text-center">
-                <p class="artist-name">${album.artist.name}</p>
-            </div>
-            <div class="mt-4 text-center">
-                <button id="btnPlay" class="btn btn-success" type="button">Play</button>
-            </div>`;
+  const [albumTracks, setAlbumTracks] = useState([]);
+  const [albumData, setAlbumData] = useState([]);
+  let tracksArray = [];
+
+  const addSongToFavourites = (song) => {
+    dispatch({
+      type: "ADD_FAVOURITES_SONG",
+      payload: song,
+    });
+    console.log(song.title + " aggiunta ai preferiti");
+    console.log(favouritesSongs);
+  };
+
+  const removeSongToFavourites = (song) => {
+    dispatch({
+      type: "REMOVE_FAVOURITES_SONG",
+      payload: song,
+    });
+    console.log(song.title + " rimossa dai preferiti");
+    console.log(favouritesSongs);
   };
 
   const selectSong = (song) => {
@@ -28,20 +37,6 @@ const AlbumComponent = () => {
       type: "SELECT_SONG",
       payload: song,
     });
-  };
-
-  const song = (track) => {
-    return `
-            <div class="py-3 trackHover" onclick=${selectSong(track)}>
-                <a href="#" class="card-title trackHover px-3" style="color:white" >${track.title}</a>
-                <small class="duration" style="color:white">${Math.floor(
-                  parseInt(track.duration) / 60 // setting the duration minutes
-                )}:${
-      parseInt(track.duration) % 60 < 10
-        ? "0" + (parseInt(track.duration) % 60) // checking che duration seconds, if they are less than 10 a 0 is prefixed
-        : parseInt(track.duration) % 60
-    }</small>
-            </div>`;
   };
 
   const fetchAlbum = async () => {
@@ -58,17 +53,14 @@ const AlbumComponent = () => {
         headers,
       });
 
-      let imgContainer = document.querySelector("#img-container"); // gets a reference to the image container
-      let trackList = document.querySelector("#trackList"); // gets a reference to the tracklist div
-
       if (response.ok) {
         let album = await response.json(); // transforms the response into a JSON
-        imgContainer.innerHTML = albumArt(album); // creates the albumArt for the img-container
         for (let i = 0; i < album.tracks.data.length; i++) {
-          let div = document.createElement("div");
-          div.innerHTML += song(album.tracks.data[i]); // use "song" method to create the item
-          trackList.appendChild(div); // add the item to the tracklist
+          tracksArray.push(album.tracks.data[i]);
         }
+        setAlbumData([tracksArray[0]]);
+        setAlbumTracks(tracksArray);
+        console.log(tracksArray[0]);
       } else {
         // something went wrong with the request --> i.e. headers missing, wrong HTTP Method
         document.querySelector("#img-container").innerHTML = "NOT OK" + (await response.text());
@@ -88,10 +80,58 @@ const AlbumComponent = () => {
     <Col xs={12} md={9} className="mt-4 offset-md-3 mainPage">
       <TopNavbar />
       <Row>
-        <Col md={3} className="pt-5 text-center" id="img-container" />
+        <Col md={3} className="pt-5 text-center" id="img-container">
+          {albumData.map((track) => {
+            return (
+              <span key={track.album.id}>
+                <img src={track.album.cover} className="card-img img-fluid" alt="Album" />
+                <div className="mt-4 text-center">
+                  <p className="album-title">{track.album.title}</p>
+                </div>
+                <div className="text-center">
+                  <p className="artist-name">{track.album.artist}</p>
+                </div>
+                <div className="mt-4 text-center">
+                  <button id="btnPlay" className="btn btn-success" type="button">
+                    Play
+                  </button>
+                </div>
+              </span>
+            );
+          })}
+        </Col>
         <Col md={8} className="p-5">
           <Row>
-            <Col md={10} className="mb-5" id="trackList" />
+            <Col md={10} className="mb-5" id="trackList">
+              {albumTracks.map((song, i) => {
+                return (
+                  <div
+                    className="py-3 trackHover"
+                    key={song.id}
+                    onClick={() => {
+                      selectSong(song);
+                    }}
+                  >
+                    <span className="card-title trackHover px-3" style={{ color: "white" }}>
+                      <i
+                        className="fas fa-heart"
+                        style={{ color: favouritesSongs.includes(song) ? "green" : "white" }}
+                        onClick={() => {
+                          favouritesSongs.includes(song) ? removeSongToFavourites(i) : addSongToFavourites(song);
+                        }}
+                      />{" "}
+                      {song.title}
+                    </span>
+                    <small className="duration me-4" style={{ color: "white" }}>
+                      {Math.floor(parseInt(song.duration) / 60)}:
+                      {parseInt(song.duration) % 60 < 10
+                        ? "0" + (parseInt(song.duration) % 60)
+                        : parseInt(song.duration) % 60}
+                    </small>
+                  </div>
+                );
+              })}
+            </Col>
           </Row>
         </Col>
       </Row>

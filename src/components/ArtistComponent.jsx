@@ -1,37 +1,15 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Button from "react-bootstrap/Button";
-import { useEffect } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import TopNavbar from "./TopNavbar";
 
 const ArtistComponent = () => {
   const params = useParams();
 
-  const albumCard = (songInfo) => {
-    return `
-          <div class="col-sm-auto col-md-auto text-center mb-5">
-            <a href="/album/${songInfo.album.id}">
-              <img class="img-fluid" src=${
-                songInfo.album.cover_medium // creating the album image anchor
-              } alt="1" />
-            </a>
-            <p>
-              <a href="#">
-                Track: "${
-                  songInfo.title.length < 16 ? `${songInfo.title}` : `${songInfo.title.substring(0, 16)}...` // setting the track title, if it's longer than 16 chars cuts the rest
-                }"
-              </a><br>
-              <a href="/album/${songInfo.album.id}">
-                Album: "${
-                  songInfo.album.title.length < 16
-                    ? `${songInfo.album.title}`
-                    : `${songInfo.album.title.substring(0, 16)}...` // setting the track title, if it's longer than 16 chars cuts the rest
-                }"
-              </a>
-            </p>
-          </div>`;
-  };
+  const [albumData, setAlbumData] = useState([]);
+  let artistAlbumArray = [];
 
   const fetchArtist = async () => {
     let artistId = params.id;
@@ -80,9 +58,9 @@ const ArtistComponent = () => {
         if (tracksResponse.ok) {
           let tracklist = await tracksResponse.json();
           for (let i = 0; i < tracklist.data.length; i++) {
-            let apiLoaded = document.querySelector("#apiLoaded");
-            apiLoaded.innerHTML += albumCard(tracklist.data[i]);
+            artistAlbumArray.push(tracklist.data[i]);
           }
+          setAlbumData(artistAlbumArray);
         }
       } else {
         // something went wrong with the request --> i.e. headers missing, wrong HTTP Method
@@ -121,7 +99,26 @@ const ArtistComponent = () => {
             <h2 className="text-white font-weight-bold">Tracks</h2>
           </div>
           <div className="pt-5 mb-5">
-            <Row id="apiLoaded" />
+            <Row id="apiLoaded">
+              {albumData.map((album) => {
+                return (
+                  <div className="col-sm-auto col-md-auto text-center mb-5">
+                    <Link to={"/album/" + album.album.id} className="text-decoration-none">
+                      <img src={album.album.cover_big} className="card-img img-fluid" alt="Album" />
+                      <div className="mt-4 text-center">
+                        <p className="album-title">
+                          {album.title.length < 16 ? album.title : album.title.substring(0, 16) + "..."}
+                        </p>
+                      </div>
+                      <div className="text-center">
+                        <p className="artist-name">{album.artist.name}</p>
+                      </div>
+                      <div className="mt-4 text-center"></div>
+                    </Link>
+                  </div>
+                );
+              })}
+            </Row>
           </div>
         </Col>
       </Row>

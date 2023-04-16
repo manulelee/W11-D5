@@ -9,6 +9,7 @@ import Row from "react-bootstrap/Row";
 import PlayerComponent from "./components/PlayerComponent";
 import AlbumComponent from "./components/AlbumComponent";
 import ArtistComponent from "./components/ArtistComponent";
+import FavouriteSongsComponent from "./components/FavouriteSongsComponent";
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
               <Route path="/" element={<HomeComponent />} />
               <Route path="/album/:id" element={<AlbumComponent />} />
               <Route path="/artist/:id" element={<ArtistComponent />} />
+              <Route path="/favourites" element={<FavouriteSongsComponent />} />
               <Route path="/*" element={<NotFoundComponent />} />
             </Routes>
             <PlayerComponent />

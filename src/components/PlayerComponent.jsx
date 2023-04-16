@@ -1,15 +1,26 @@
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Container from "react-bootstrap/Container";
+import { useSelector } from "react-redux";
 
 const PlayerComponent = () => {
+  const selectedSong = useSelector((state) => state.data.selected);
+
   return (
     <Container fluid className=" fixed-bottom bg-container pt-1">
-      <Row>
-        <Col lg={10} className="offset-lg-2">
+      <Row className="mt-2">
+        <Col lg={2} className="offset-lg-2 align-self-center">
+          {selectedSong && (
+            <>
+              <img src={selectedSong.album.cover} alt="album cover" id="playerImg" />
+              <p style={{ color: "white" }}>{selectedSong.title}</p>
+            </>
+          )}
+        </Col>
+        <Col lg={6} className="offset-lg-2">
           <Row>
-            <Col xs={12} md={8} lg={6} className="offset-md-2 offset-lg-3 mt-1" id="playerControls">
-              <Row className="iconsImg justify-content-center">
+            <Col xs={12} md={8} lg={6} className="offset-md-1 offset-lg-2" id="playerControls">
+              <Row className="iconsImg justify-content-start">
                 <Col xs={1} className="col-sm-1">
                   <img src="/assets/playerbuttons/Shuffle.png" alt="shuffle" />
                 </Col>
